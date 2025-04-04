@@ -1,0 +1,182 @@
+<!-- /Users/harshareddy/Documents/Major_project/MJ/Web/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Tweet Classifier</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Import Google Font */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: #333;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+        }
+
+        h1 {
+            color: #4a4a4a;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        p.description {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            resize: vertical;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            border-color: #6e8efb;
+            outline: none;
+            box-shadow: 0 0 5px rgba(110, 142, 251, 0.5);
+        }
+
+        input[type="submit"] {
+            padding: 12px 25px;
+            background: linear-gradient(90deg, #6e8efb, #a777e3);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 500;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        input[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(110, 142, 251, 0.4);
+        }
+
+        input[type="submit"]:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #4a4a4a;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            display: none; /* Hidden by default */
+        }
+
+        .tweet {
+            font-style: italic;
+            color: #777;
+            margin-bottom: 5px;
+        }
+
+        .loading {
+            display: none;
+            font-size: 1em;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        /* Loading Animation */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #6e8efb;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-left: 5px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .container {
+                margin: 20px;
+                padding: 20px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            textarea {
+                height: 100px;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const submitBtn = document.querySelector('input[type="submit"]');
+            const loading = document.querySelector('.loading');
+            const result = document.querySelector('.result');
+
+            // Show result if it exists on page load (e.g., after submission)
+            if (result.innerHTML.trim() !== '') {
+                result.style.display = 'block';
+            }
+
+            form.addEventListener('submit', function(e) {
+                // Show loading animation and disable button
+                loading.style.display = 'block';
+                submitBtn.disabled = true;
+                result.style.display = 'none';
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Tweet Classifier</h1>
+        <p class="description">Enter a tweet to classify it as Hate, Offensive, or Neither.</p>
+        <form method="post" action="/predict">
+            <textarea name="tweet" placeholder="Enter a tweet to classify..."></textarea><br>
+            <input type="submit" value="Classify">
+        </form>
+        <div class="result" style="display: none;">
+            {% if prediction %}
+            <p><strong>Tweet:</strong> <span class="tweet">{{ tweet }}</span></p>
+            <p><strong>{{ prediction }}</strong></p>
+            {% endif %}
+        </div>
+        <div class="loading">Classifying <span class="spinner"></span></div>
+    </div>
+</body>
+</html>
